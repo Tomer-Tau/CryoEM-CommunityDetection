@@ -28,6 +28,10 @@ for mixing_parameter in np.arange(0.1, 1, 0.1):
     set_comm = {frozenset(LFR_G.nodes[v]["community"]) for v in LFR_G}
     comm_list = [node_set for node_set in set_comm]
     true_labels = extract_communities_list(comm_list)
+    nx.draw(LFR_G, nx.spring_layout(LFR_G), node_color=true_labels, cmap=plt.cm.get_cmap('rainbow'), node_size=30)
+    comm_num = len(true_labels)
+    plt.title('len: %i', comm_num)
+    plt.show()
 
     ############################### Infomap ###############################
     infomap_partition = cd.infomap(LFR_G)  # Partition graph with Infomap
