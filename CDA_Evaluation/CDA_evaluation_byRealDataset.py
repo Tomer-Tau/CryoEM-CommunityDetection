@@ -16,7 +16,7 @@ from cdlib import evaluation as eval
 import networkx as nx
 import matplotlib.pyplot as plt
 from sklearn.metrics.cluster import normalized_mutual_info_score
-from sklearn.metrics.cluster import adjusted_mutual_info_score
+from sklearn.metrics.cluster import adjusted_rand_score
 import numpy as np
 import time
 from math import log
@@ -72,7 +72,7 @@ infomap_time = time.time() - start_time
 infomap_communities = extract_communities_list(infomap_partition.communities, G)
 infomap_partitions = get_partitions(infomap_communities)
 nmi_infomap = normalized_mutual_info_score(true_communities, infomap_communities)
-ami_infomap = adjusted_mutual_info_score(true_communities, infomap_communities)
+ari_infomap = adjusted_rand_score(true_communities, infomap_communities)
 vi_infomap = variation_of_information(true_partitions, infomap_partitions)
 
 ############################### Leading Eigenvector ###############################
@@ -82,7 +82,7 @@ eifenvector_time = time.time() - start_time
 eigenvector_communities = extract_communities_list(eigenvector_partition.communities, G)
 eigenvector_paritions = get_partitions(eigenvector_communities)
 nmi_eigenvector = normalized_mutual_info_score(true_communities, eigenvector_communities)
-ami_eigenvector = adjusted_mutual_info_score(true_communities, eigenvector_communities)
+ari_eigenvector = adjusted_rand_score(true_communities, eigenvector_communities)
 vi_eigenvector = variation_of_information(true_partitions, eigenvector_paritions)
 
 ############################### Louvian ###############################
@@ -92,7 +92,7 @@ louvian_time = time.time() - start_time
 louvian_communities = extract_communities_list(louvian_partition.communities, G)
 louvian_partitions = get_partitions(louvian_communities)
 nmi_louvian = normalized_mutual_info_score(true_communities, louvian_communities)
-ami_louvian = adjusted_mutual_info_score(true_communities, louvian_communities)
+ari_louvian = adjusted_rand_score(true_communities, louvian_communities)
 vi_louvian = variation_of_information(true_partitions, louvian_partitions)
 
 ############################### Leiden ###############################
@@ -102,7 +102,7 @@ leiden_time = time.time() - start_time
 leiden_communities = extract_communities_list(leiden_partition.communities, G)
 leiden_partitions = get_partitions(leiden_communities)
 nmi_ledien = normalized_mutual_info_score(true_communities, leiden_communities)
-ami_leiden = adjusted_mutual_info_score(true_communities, leiden_communities)
+ari_leiden = adjusted_rand_score(true_communities, leiden_communities)
 vi_leiden = variation_of_information(true_partitions, leiden_partitions)
 
 ############################### Walktrap ###############################
@@ -112,7 +112,7 @@ walktrap_time = time.time() - start_time
 walktrap_communities = extract_communities_list(walktrap_partition.communities, G)
 walktrap_partitions = get_partitions(walktrap_communities)
 nmi_walktrap = normalized_mutual_info_score(true_communities, walktrap_communities)
-ami_walktrap = adjusted_mutual_info_score(true_communities, walktrap_communities)
+ari_walktrap = adjusted_rand_score(true_communities, walktrap_communities)
 vi_walktrap = variation_of_information(true_partitions, walktrap_partitions)
 
 ############################### Markov Clustering ###############################
@@ -122,7 +122,7 @@ markov_time = time.time() - start_time
 markov_communities = extract_communities_list(markov_partition.communities, G)
 markov_partitions = get_partitions(markov_communities)
 nmi_markov = normalized_mutual_info_score(true_communities, markov_communities)
-ami_markov = adjusted_mutual_info_score(true_communities, markov_communities)
+ari_markov = adjusted_rand_score(true_communities, markov_communities)
 vi_markov = variation_of_information(true_partitions, markov_partitions)
 
 ############################### Greedy ###############################
@@ -132,7 +132,7 @@ greedy_time = time.time() - start_time
 greedy_communities = extract_communities_list(greedy_partition.communities, G)
 greedy_partitions = get_partitions(greedy_communities)
 nmi_greedy = normalized_mutual_info_score(true_communities, greedy_communities)
-ami_greedy = adjusted_mutual_info_score(true_communities, greedy_communities)
+ari_greedy = adjusted_rand_score(true_communities, greedy_communities)
 vi_greedy = variation_of_information(true_partitions, greedy_partitions)
 
 ############################### Label Propagation ###############################
@@ -142,22 +142,22 @@ propagation_time = time.time() - start_time
 propagation_communities = extract_communities_list(propagation_partition.communities, G)
 propagation_partitions = get_partitions(propagation_communities)
 nmi_propagation = normalized_mutual_info_score(true_communities, propagation_communities)
-ami_propagation = adjusted_mutual_info_score(true_communities, propagation_communities)
+ari_propagation = adjusted_rand_score(true_communities, propagation_communities)
 vi_propagation = variation_of_information(true_partitions, propagation_partitions)
 
 
 nmi_x = np.arange(8)
-ami_x = [x + 0.3 for x in nmi_x]
-vi_x = [x + 0.3 for x in ami_x]
+ari_x = [x + 0.3 for x in nmi_x]
+vi_x = [x + 0.3 for x in ari_x]
 
 #Plot NMI score
 plt.grid(zorder=0)
 plt.bar(nmi_x,
         [nmi_infomap, nmi_eigenvector, nmi_louvian, nmi_ledien, nmi_walktrap, nmi_markov, nmi_greedy, nmi_propagation],
          width=0.3,label="NMI",color='#266ed9',zorder=3)
-plt.bar(ami_x,
-        [ami_infomap, ami_eigenvector, ami_louvian, ami_leiden, ami_walktrap, ami_markov, ami_greedy, ami_propagation],
-         width=0.3,label="AMI",color='#ef102d',zorder=3)
+plt.bar(ari_x,
+        [ari_infomap, ari_eigenvector, ari_louvian, ari_leiden, ari_walktrap, ari_markov, ari_greedy, ari_propagation],
+         width=0.3,label="ARI",color='#ef102d',zorder=3)
 plt.bar(vi_x,
          [vi_infomap, vi_eigenvector, vi_louvian, vi_leiden, vi_walktrap, vi_markov, vi_greedy, vi_propagation],
          width=0.3,label="VI",color='#42bd56',zorder=3)
@@ -174,6 +174,6 @@ plt.bar(["Infomap", "Eigenvector", "Louvian", "Leiden", "Walktrap", "Markov", "G
          [infomap_time, eifenvector_time, louvian_time, leiden_time, walktrap_time, markov_time, greedy_time, propagation_time],
          color='#de8221',zorder=3)
 plt.ylabel("Time[s]")
-plt.title("Algorithms execution time for the political books dataset")
+plt.title("Algorithms execution time for the football games dataset")
 plt.xticks(rotation=45, ha="right")
 plt.show()
