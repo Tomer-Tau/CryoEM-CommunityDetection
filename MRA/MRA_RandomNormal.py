@@ -1,5 +1,5 @@
 import numpy as np
-from scipy import signal
+from scipy import stats
 import Generate
 import networkx as nx
 import matplotlib.pyplot as plt
@@ -7,15 +7,14 @@ import matplotlib.pyplot as plt
 # Parameters
 N = 30 # Number of observations
 L = 50 # Signals length
-K = 2 # Number of signals
+K = 10 # Number of signals
 sigma = 0.1 # Noise level
 
 x = np.zeros((K,L))
-# Generate Rectangle at x[0]
-for l in range(int(L/2)):
-    x[0][l] = 1
-# Generate Triangle at x[1]
-x[1] = signal.triang(L)
+random_std = stats.randint.rvs(low=0, high=5, size=K)  # Random uniformly distributed selections of signals
+# Generate Standard Normally Distributed signals
+for k in range(K):
+    x[k] = np.random.normal(0, random_std[k], L)
 
 y, true_partition = Generate.generate_MRA(N, K, L, sigma, x)
 max_corr = Generate.generate_maxcorr(N, L, y)
@@ -23,6 +22,6 @@ max_corr = Generate.generate_maxcorr(N, L, y)
 G = Generate.generate_graph(max_corr, true_partition)
 edges,weights = zip(*nx.get_edge_attributes(G,'weight').items())
 pos = nx.spring_layout(G)
-plt.title("MRA samples graph. Blue=Rectangle;Red=Triangle")
+plt.title("Random Gaussian MRA samples")
 nx.draw(G, pos, node_color=true_partition, edgelist=edges, edge_color=weights, width=2, cmap=plt.cm.jet, edge_cmap=plt.cm.Greens)
 plt.show()
