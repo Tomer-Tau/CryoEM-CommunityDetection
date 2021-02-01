@@ -11,7 +11,7 @@ K = 10 # Number of signals
 sigma = 0.1 # Noise level
 
 x = np.zeros((K,L))
-random_std = stats.randint.rvs(low=0, high=5, size=K)  # Random uniformly distributed selections of signals
+random_std = stats.randint.rvs(low=1, high=5, size=K)  # Random uniformly distributed selections of signals
 # Generate Standard Normally Distributed signals
 for k in range(K):
     x[k] = np.random.normal(0, random_std[k], L)
