@@ -4,7 +4,7 @@ import networkx as nx
 import matplotlib.pyplot as plt
 
 # Parameters
-N = 30 # Number of observations
+N = 100 # Number of observations
 L = 50 # Signals length
 K = 10 # Number of signals
 sigma = 0.1 # Noise level
@@ -21,5 +21,5 @@ G = Generate.generate_graph(max_corr, true_partition)
 edges,weights = zip(*nx.get_edge_attributes(G,'weight').items())
 pos = nx.spring_layout(G)
 plt.title("Standard Normal Gaussian MRA samples")
-nx.draw(G, pos, node_color=true_partition, edgelist=edges, edge_color=weights, width=2, cmap=plt.cm.jet, edge_cmap=plt.cm.Greens)
+nx.draw(G, pos, node_color=true_partition, node_size=20, edgelist=edges, edge_color=weights, width=1, cmap=plt.cm.jet, edge_cmap=plt.cm.Greens)
 plt.show()
