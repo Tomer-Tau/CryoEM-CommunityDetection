@@ -47,7 +47,7 @@ def generate_maxcorr(N, L, y):
     for i in range(N - 1):
         max_corr[i][i] = None
         for j in range(i + 1, N):
-            normalized_corr = (np.correlate(y[i] - np.mean(y[i]), y[j] - np.mean(y[j]))[0] /
+            normalized_corr = (max(np.correlate(y[i] - np.mean(y[i]), y[j] - np.mean(y[j]), mode='full')) /
                                L * (np.std(y[i]) * np.std(
                         y[j])))  # Calculate the normalized correlation between y[i] and y[j]
             if normalized_corr > 0:
