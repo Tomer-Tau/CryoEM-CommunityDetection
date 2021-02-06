@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 N = 30 # Number of observations
 L = 50 # Signals length
 K = 2 # Number of signals
-sigma = 0.1 # Noise level
+sigma = 0.8 # Noise level
 
 x = np.zeros((K,L))
 # Generate Rectangle at x[0]

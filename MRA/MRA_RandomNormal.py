@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 N = 100 # Number of observations
 L = 50 # Signals length
 K = 10 # Number of signals
-sigma = 0.1 # Noise level
+sigma = 0.8 # Noise level
 
 x = np.zeros((K,L))
 random_std = stats.randint.rvs(low=1, high=5, size=K)  # Random uniformly distributed selections of signals
