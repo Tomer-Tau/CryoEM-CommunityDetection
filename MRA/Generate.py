@@ -1,6 +1,7 @@
 import networkx as nx
 import numpy as np
 from scipy import stats
+from numpy.fft import fft, ifft
 
 
 def generate_graph(adjacency_matrix, node_labels):
@@ -47,12 +48,12 @@ def generate_maxcorr(N, L, y):
     for i in range(N - 1):
         max_corr[i][i] = None
         for j in range(i + 1, N):
-            normalized_corr = (max(np.correlate(y[i] - np.mean(y[i]), y[j] - np.mean(y[j]), mode='full')) /
-                               L * (np.std(y[i]) * np.std(
-                        y[j])))  # Calculate the normalized correlation between y[i] and y[j]
-            if normalized_corr > 0:
-                max_corr[i][j] = normalized_corr
-                max_corr[j][i] = normalized_corr
+            a = (y[i] - np.mean(y[i]))/np.linalg.norm(y[i] - np.mean(y[i]), 2)
+            b = (y[j] - np.mean(y[j]))/np.linalg.norm(y[j] - np.mean(y[j]), 2)
+            circular_corr = max(ifft(fft(a).conj()*fft(b)).real)
+            if circular_corr > 0:
+                max_corr[i][j] = circular_corr
+                max_corr[j][i] = circular_corr
             else:
                 max_corr[i][j] = None
                 max_corr[j][i] = None
