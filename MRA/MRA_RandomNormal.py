@@ -15,6 +15,7 @@ random_std = stats.randint.rvs(low=1, high=5, size=K)  # Random uniformly distri
 # Generate Standard Normally Distributed signals
 for k in range(K):
     x[k] = np.random.normal(0, random_std[k], L)
+    x[k] = (x[k] - np.mean(x[k])) / np.linalg.norm(x[k] - np.mean(x[k]), 2)  # Normalize signal
 
 y, true_partition = Generate.generate_MRA(N, K, L, sigma, x)
 max_corr = Generate.generate_maxcorr(N, L, y)

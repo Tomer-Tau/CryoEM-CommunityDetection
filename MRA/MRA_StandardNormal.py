@@ -4,15 +4,16 @@ import networkx as nx
 import matplotlib.pyplot as plt
 
 # Parameters
-N = 100 # Number of observations
+N = 30 # Number of observations
 L = 50 # Signals length
-K = 10 # Number of signals
-sigma = 0.8 # Noise level
+K = 2 # Number of signals
+sigma = 0.2 # Noise level
 
 x = np.zeros((K,L))
 # Generate Standard Normally Distributed signals
 for k in range(K):
     x[k] = np.random.standard_normal(L)
+    x[k] = (x[k] - np.mean(x[k]))/np.linalg.norm(x[k] - np.mean(x[k]), 2) # Normalize signal
 
 y, true_partition = Generate.generate_MRA(N, K, L, sigma, x)
 max_corr = Generate.generate_maxcorr(N, L, y)

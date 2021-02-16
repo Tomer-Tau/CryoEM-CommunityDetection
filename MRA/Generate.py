@@ -48,9 +48,7 @@ def generate_maxcorr(N, L, y):
     for i in range(N - 1):
         max_corr[i][i] = None
         for j in range(i + 1, N):
-            a = (y[i] - np.mean(y[i]))/np.linalg.norm(y[i] - np.mean(y[i]), 2)
-            b = (y[j] - np.mean(y[j]))/np.linalg.norm(y[j] - np.mean(y[j]), 2)
-            circular_corr = max(ifft(fft(a).conj()*fft(b)).real)
+            circular_corr = max(ifft(fft(y[i]).conj() * fft(y[j])).real)
             if circular_corr > 0:
                 max_corr[i][j] = circular_corr
                 max_corr[j][i] = circular_corr
