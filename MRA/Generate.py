@@ -55,4 +55,5 @@ def generate_maxcorr(N, L, y):
             else:
                 max_corr[i][j] = None
                 max_corr[j][i] = None
+    max_corr[N - 1][N - 1] = None
     return max_corr
