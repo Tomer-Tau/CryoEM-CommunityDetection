@@ -39,7 +39,7 @@ def create_communities_2darray(communities_labels):
 
 
 N = 100
-K = 5
+K = 2
 sigma = 0
 G, true_labels = MRA_Graphs.MRA_StandardNormal(N, L=50, K=K, sigma=sigma)
 
@@ -82,11 +82,11 @@ intra_weights["walktrap"], inter_weights["walktrap"] = \
 fig, axs = plt.subplots(3, 2)
 fig.suptitle("Edges distribution by weight for sigma={0},K={1}".format(sigma, K))
 
-plot_historgram(fig.axes[0], inter_weights["leiden"], intra_weights["leiden"], edges_num, "leiden")
-plot_historgram(fig.axes[1], inter_weights["louvain"], intra_weights["louvain"], edges_num, "louvain")
-plot_historgram(fig.axes[2], inter_weights["leading_eigenvector"], intra_weights["leading_eigenvector"], edges_num, "leading_eigenvector")
-plot_historgram(fig.axes[3], inter_weights["multilevel"], intra_weights["multilevel"], edges_num, "multilevel")
-plot_historgram(fig.axes[4], inter_weights["spinglass"], intra_weights["spinglass"], edges_num, "spinglass")
-plot_historgram(fig.axes[5], inter_weights["walktrap"], intra_weights["walktrap"], edges_num, "walktrap")
+plot_historgram(fig.axes[0], intra_weights["leiden"], inter_weights["leiden"], edges_num, "leiden")
+plot_historgram(fig.axes[1], intra_weights["louvain"], inter_weights["louvain"], edges_num, "louvain")
+plot_historgram(fig.axes[2], intra_weights["leading_eigenvector"], inter_weights["leading_eigenvector"], edges_num, "leading_eigenvector")
+plot_historgram(fig.axes[3], intra_weights["multilevel"], inter_weights["multilevel"], edges_num, "multilevel")
+plot_historgram(fig.axes[4], intra_weights["spinglass"], inter_weights["spinglass"], edges_num, "spinglass")
+plot_historgram(fig.axes[5], intra_weights["walktrap"], inter_weights["walktrap"], edges_num, "walktrap")
 
 plt.show()
