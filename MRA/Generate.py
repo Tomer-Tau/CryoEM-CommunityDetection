@@ -34,6 +34,7 @@ def generate_MRA(N, K, L, sigma, x):
         true_signals[n] = k[n]
         shifted_x = np.roll(x[k[n]], s[n])
         y[n] = shifted_x + epsilon[n]
+        y[n] = (y[n] - np.mean(y[n])) / np.linalg.norm(y[n] - np.mean(y[n]), 2)  # Normalize signal
 
     return y, true_signals
 
