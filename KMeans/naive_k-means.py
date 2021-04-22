@@ -66,7 +66,7 @@ def compute_new_centers(centroids):
 def compare_centroids(old_centroids,new_centroids):
     centers1=flatten_centroid2(old_centroids)
     centers2 = flatten_centroid2(new_centroids)
-    t1=all([np.allclose(x, y) for x, y in zip(centers1, centers2)])
+    t1=all([np.allclose(x.sort(), y.sort()) for x, y in zip(centers1, centers2)])
     return (t1 and len(centers1)>0 and len(centers2)>0)
 
 #For output
