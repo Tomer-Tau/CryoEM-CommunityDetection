@@ -185,4 +185,3 @@ def naive_k_means(k, data_list, max_iteration, metric,initial_state,labels=None,
 
 
 
-
