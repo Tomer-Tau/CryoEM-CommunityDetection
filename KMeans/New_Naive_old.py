@@ -13,8 +13,6 @@ from numpy.fft import fft, ifft
 
 
 #Auxiliary functions for simplicity
-
-#
 def tablelized(centers):
     m=len(centers)
     L=np.ndim(centers)
@@ -38,7 +36,6 @@ def Pack(addInitial, addDistance, addComunities, initial_centers, distances, com
         y.append(communities_dicti)
     return tuple(y)
 
-#convert t
 def ToDicti(communities):
     dicti={}
     indexy=0
@@ -54,7 +51,7 @@ def ToDicti(communities):
 #2. 'random': Choose uniformly k vectors from the n vectors;
 #3. 'mean': The centers are taken as k normal gaussian samples s.t N~(E[data_list],std(data_list))
 #4. '++' (default): The initializion is according to the k-means++ algorithm
-def k_means_Type(initial_state,data_list,k,n,metric,threshold,isCircularData):
+def k_means_Type(initial_state,data_list,k,n,metric,threshold):
     if initial_state=='first':
          return data_list[:k]
     elif initial_state=='random':
@@ -66,24 +63,24 @@ def k_means_Type(initial_state,data_list,k,n,metric,threshold,isCircularData):
         centers = np.random.randn(k, np.shape(data_list)[1]) * std + mean
         return centers
     else:
-        centers = []
-        random_index = np.random.choice(len(data_list), 1)
-        current_center = np.array(data_list[random_index[0]])
+        centers=[]
+        random_index = np.random.choice(len(data_list),1)
+        current_center=np.array(data_list[random_index][0])
         centers.append(current_center)
-        counter = 1
-        # print(np.array(data_list[random_index][0]))
-        # print(np.array(data_list[[random_index][0]]))
-        while counter < k:
-            dist_list = np.array([distance_calculation(data_list[i], current_center, metric, threshold, isCircularData)
-                                  for i in range(len(data_list))])
-            sum_dist = sum(dist_list)
-            probability_dist = dist_list / sum_dist
-            chosen_index = np.random.choice(range(len(data_list)), 1, p=probability_dist)  # np.random.choice receives
+        counter=1
+        #print(np.array(data_list[random_index][0]))
+        #print(np.array(data_list[[random_index][0]]))
+        while counter<k:
+            dist_list=np.array([distance_metric(metric,data_list[i],current_center,threshold)
+                                          for i in range(len(data_list))])
+            sum_dist=sum(dist_list)
+            probability_dist=dist_list/sum_dist
+            chosen_index=np.random.choice(range(len(data_list)), 1, p=probability_dist) #np.random.choice receives
             # only 1-D array
-            # current_center = np.array(data_list[random_index][0])
-            current_center = data_list[chosen_index[0]]
+            #current_center = np.array(data_list[random_index][0])
+            current_center=data_list[chosen_index[0]]
             centers.append(current_center)
-            counter += 1
+            counter+=1
         return centers
 
 
@@ -94,46 +91,33 @@ def k_means_Type(initial_state,data_list,k,n,metric,threshold,isCircularData):
 #cosine:d_i^2=1-(x*y)/(||x||*||y||)
 #manhattan: d_i=|x_i-y_i|
 #pearson: d_i^2= 1-((x-E[x])*(y-E[y]))/(||x-E[x]||*||y-E[y]||)
+#circular_ciorr: d_i^2 = max(ifft(fft(y[i]).conj() * fft(y[j])).real)
 #euclidean (default): d_i=sqrt(x_i^2-y_i^2)
-def distance_metric(metric,x,y,threshold):
-    pre_dist = 0
-    if metric == 'cosine' or metric == 'pearson':
-        if metric == 'cosine':
-            x_norm=np.linalg.norm(x)
-            y_norm=np.linalg.norm(y)
-            scalar_product=np.dot(x, y)
-            pre_dist=scalar_product/(x_norm*y_norm)
-        else:
-            Ex = np.mean(x)
-            Ey = np.mean(y)
-            x_norm = np.linalg.norm(x - Ex)
-            y_norm = np.linalg.norm(y - Ex)
-            scalar_product = np.dot(x - Ex, y - Ex)
-            pre_dist = scalar_product / (x_norm * y_norm)
-        if pre_dist<threshold:
-            return 1
-        return 1-pre_dist
+def distance_metric(metric,x,y,threshold=0):
+    if metric == 'cosine':
+        x_norm=np.linalg.norm(x)
+        y_norm=np.linalg.norm(y)
+        scalar_product=np.dot(x, y)
+        return 1-scalar_product/(x_norm*y_norm)
+    elif metric == 'manhattan':
+        return np.linalg.norm(x - y, ord=1)
+    elif metric == 'pearson':
+        Ex=np.mean(x)
+        Ey=np.mean(y)
+        x_norm=np.linalg.norm(x-Ex)
+        y_norm=np.linalg.norm(y-Ex)
+        scalar_product = np.dot(x-Ex, y-Ex)
+        return 1-scalar_product/(x_norm*y_norm)
+    elif metric == 'circular':
+        circular=max(ifft(fft(x).conj() * fft(y).real).real)
+        if circular<threshold:
+            return 2*len(x)
+        return 2*len(x)*(1-circular)
     else:
-        if metric == 'manhattan':
-            pre_dist = np.linalg.norm(x - y, ord=1)
-        else:
-            pre_dist = np.linalg.norm(x-y)
-        if (pre_dist<threshold):
-            return np.infty
-        return pre_dist
-
-
-def distance_calculation(x,y, metric, threashold, isCircularData):
-    if not isCircularData:
-        return distance_metric(metric, x, y, threashold)
-    else:
-        L= len(x)
-        l = [distance_metric(metric, np.roll(x, s), y, threashold) for s in range(L)]
-        m = np.min(l)
-        return m
+        return np.linalg.norm(x-y)
 
 #assign each point to its closest centroid
-def assign_centroids(centers,data_list,metric,threshold,isCircularData):
+def assign_centroids(centers,data_list,metric,threshold):
     centroids={}
     demi_centroids={}
     n = len(data_list)
@@ -145,8 +129,7 @@ def assign_centroids(centers,data_list,metric,threshold,isCircularData):
         centroids[i]=[centers[i],[]]
         demi_centroids[i] = []
     for i in range(n):
-        dist_list=np.array([distance_calculation(data_list[i],centers[j],metric,threshold,isCircularData)
-                            for j in range(m)],dtype=object)
+        dist_list=np.array([distance_metric(metric,data_list[i],centers[j],threshold) for j in range(m)],dtype=object)
         index=int(np.argmin(dist_list))
         labeled.append(index)
         distances.append(dist_list[index])
@@ -169,7 +152,7 @@ def change_label_and_distances(point,originial_index, new_index,labeled,distance
 #'add_random': take a random point from a big cluster and move it to the empty cluster
 #'remove': delete the empty clusters and reduce the number of cluster
 #'add_biggest' (default): take the farthest point from the largest cluster and add it to an empty cluster
-def treat_empty(centroids, labeled, distances, demi_centroids, metric,threshold, method, isCircularData):
+def treat_empty(centroids, labeled, distances, demi_centroids, metric,threshold, method):
     centers, communities = flatten_centroid1(centroids)
     max_points=[]
     maximal_distance_point=0
@@ -190,11 +173,11 @@ def treat_empty(centroids, labeled, distances, demi_centroids, metric,threshold,
     # else: method == 'add_random', 'add_biggest' or 'add_farthest'
     for i in range(k):
         if len(communities[i][1])==0:
-            if method == 'add_farthest' or method == 'add_biggest':
+            if method=='add_farthest' or method=='add_biggest':
                 if method == 'add_farthest':
                     for j in range(k):
                         if len(communities[j][1])>1:
-                            dist_list=np.array([distance_calculation(point,centers[j][1],metric,threshold,isCircularData)
+                            dist_list=np.array([distance_metric(metric,point,centers[j][1],threshold)
                                                 for point in communities[j][1]],dtype=object)
                             max_index=np.argmax(dist_list)
                             max_points.append((communities[j][1][max_index],max_index,dist_list[max_index],
@@ -207,7 +190,7 @@ def treat_empty(centroids, labeled, distances, demi_centroids, metric,threshold,
                         if len(communities[j][1])>biggest:
                          biggest=len(communities[j][1])
                          biggest_index=j
-                    dist_list = np.array([distance_calculation(point, centers[biggest_index][1], metric, threshold, isCircularData)
+                    dist_list = np.array([distance_metric(metric, point, centers[biggest_index][1], threshold)
                                           for point in communities[biggest_index][1]],dtype=object)
                     max_index = np.argmax(dist_list)
                     maximal_distance_point=(communities[biggest_index][1][max_index], max_index, dist_list[max_index],
@@ -224,7 +207,7 @@ def treat_empty(centroids, labeled, distances, demi_centroids, metric,threshold,
                         if len(communities[j][1])>1:
                             options.append(j)
                     random_community_index = np.random.choice(options,replace=False)
-                    random_point_index = np.random.choice(range(len(communities[random_community_index][1])),1)[0]
+                    random_point_index = np.random.sample(range(len(communities[random_community_index][1])),1)[0]
                     communities[i][1].append(communities[random_community_index][1][random_point_index])
                     centers[i][1]=communities[random_community_index][1][random_point_index]
                     communities[random_community_index][1].pop(int(random_point_index))
@@ -237,13 +220,14 @@ def treat_empty(centroids, labeled, distances, demi_centroids, metric,threshold,
     return new_centroids,labeled, distances
 
 #Assign points to centroids, while assuring now empty cluster is created
-def Designate_Centroids(centers,data_list,metric,threshold,method,isCircularData):
-    new_centroids, labeled, distances, demi_cetnroids = assign_centroids(centers,data_list,metric,threshold,isCircularData)
-    new_centroids, labeled, distances = treat_empty(new_centroids,labeled,distances,demi_cetnroids,metric,threshold,method,isCircularData)
+def Designate_Centroids(centers,data_list,metric,threshold,method):
+    new_centroids, labeled, distances, demi_cetnroids = assign_centroids(centers,data_list,metric,threshold)
+    new_centroids, labeled, distances = treat_empty(new_centroids,labeled,distances,demi_cetnroids,metric,threshold,
+                                                    method)
     return new_centroids, labeled, distances
 
 #update the centers of the centroids
-def compute_new_centers(centroids):
+def compute_new_centers(centroids,metric,threshold):
     new_centroids={}
     for key,value in centroids.items():
         if(len(value[1])==0):
@@ -261,11 +245,9 @@ def compare_centroids(old_centroids,new_centroids):
     return t1 and len(centers1) > 0 and len(centers2) > 0
 
 #For output
-def begin_function(metric,initial_state,k,max_iteration, n, method, threshold, isCircularData,
-                   addInitial, addDistance, addComunities):
+def begin_function(metric,initial_state,k,max_iteration, n, method, threshold, addInitial, addDistance, addComunities):
 
     print("Search for {0} clusters for at most {1} iterations:".format(k, max_iteration))
-
     if n==k:
         print("As the number of requested communities is equal to the number of the data points, "
               "the solution is trival.")
@@ -278,11 +260,12 @@ def begin_function(metric,initial_state,k,max_iteration, n, method, threshold, i
             s1='the Pearson-correlated distance'
             if threshold != 0:
                 s1 += ' with threshold value of {0}'.format(threshold)
+        elif metric == 'circular':
+            s1='the circular-correlated distance'
+            if threshold != 0:
+                s1 += ' with threshold value of {0}'.format(threshold)
         else:
             s1='the Euclidean distance'
-
-        if(isCircularData==True):
-            print("All the metrics will be calculated over all the possible shifts")
 
         if initial_state=='first':
             print("*For our initial values, we chose the first k vectors.")
@@ -365,7 +348,7 @@ def flatten_centroid2(centroid):
 # it was in the input)
 
 def Naive_k_means(data_list,k,max_iteration=300,initial_state='++',metric='euclidean',threshold=0, method='none',
-                  isCircularData=False, addInitial=False, addDistance=False, addCommunities=False):
+                  addInitial=False, addDistance=False, addCommunities=False):
     old_centroids={}
     new_centroids={}
     centers=[]
@@ -387,8 +370,7 @@ def Naive_k_means(data_list,k,max_iteration=300,initial_state='++',metric='eucli
         else:
             return None, None, None, None, None
 
-    begin_function(metric,initial_state,k,max_iteration,n, method,threshold,isCircularData,
-                   addInitial,addDistance,addCommunities)
+    begin_function(metric,initial_state,k,max_iteration,n, method,threshold,addInitial,addDistance,addCommunities)
     if n == k:
         for i in range(n):
             centers.append(data_list[i])
@@ -405,14 +387,14 @@ def Naive_k_means(data_list,k,max_iteration=300,initial_state='++',metric='eucli
         else:
             return centers, labeled, x[0], x[1], x[2]
 
-    centers=k_means_Type(initial_state,data_list,k,n,metric,threshold,isCircularData)
+    centers=k_means_Type(initial_state,data_list,k,n,metric,threshold)
     initial=[(i,centers[i]) for i in range(k)]
     initial=tablelized(initial)
-    new_centroids, labeled, distances, _ =assign_centroids(centers,data_list,metric,threshold,isCircularData)
-    for i in range(max_iteration):
+    new_centroids, labeled, distances, _ =assign_centroids(centers,data_list,metric,threshold)
+    while True:
         centers, communities = flatten_centroid1(old_centroids)
         if compare_centroids(old_centroids, new_centroids):
-            print("The algorithm stopped after {0} iterations as it arrived to saturation.".format(i))
+            print("The algorithm stopped after {0} iterations as it arrived to saturation.".format(counter))
             centers=tablelized(centers)
             *x, = Pack(addInitial, addDistance, addCommunities, initial, distances, communities)
             if features_counter == 0:
@@ -425,12 +407,14 @@ def Naive_k_means(data_list,k,max_iteration=300,initial_state='++',metric='eucli
                 return centers, labeled, x[0], x[1], x[2]
         else:
             old_centroids=new_centroids
-            new_centroids=compute_new_centers(old_centroids)
+            new_centroids=compute_new_centers(old_centroids,metric,threshold)
             centers=flatten_centroid2(new_centroids)
-            new_centroids, labeled, distances=Designate_Centroids(centers,data_list,metric,threshold,method,isCircularData)
-
+            new_centroids, labeled, distances=Designate_Centroids(centers,data_list,metric,threshold,method)
+            counter+=1
+            if (counter==max_iteration):
+                break
     print("The algorithm stopped after reaching the maximal permitted number of iterations, which is {0}".format(
-        max_iteration))
+        counter))
     centers, communities = flatten_centroid1(old_centroids)
     centers=tablelized(centers)
     *x, = Pack(addInitial, addDistance, addCommunities, initial, distances, communities)
