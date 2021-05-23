@@ -1,0 +1,66 @@
+\center
+
+\section{Theoretical background}
+
+\raggedright
+
+This section should include a comprehensive review of prior work across the stated aims. It also provides a summary of the gaps in the current literature and is will be substantially longer than a background section in a manuscript.
+
+%%
+%% Citations
+%%
+
+\subsection{Referencing Citations}
+
+Citations are straight forward and will be automatically sorted on rendering. Include your citations in the \textit{references.bib} file. For examples, see this  \textit{\href{https://libguides.nps.edu/citation/ieee-bibtex}{handy citation guide}}. Here's an example usage where I cite this project \cite{OHSU-overleaf-dissertation-template}. Boom!
+
+%%
+%% Including Figures
+%%
+
+\subsection{Including figures}
+
+You might include a figure here...
+
+\begin{figure*}
+  \centering
+  \includegraphics[width=\textwidth]{"figures/thesis-defense".png}
+  \caption{\textbf{The best thesis defense is a good thesis offense.} A conceptual illustration of the celebrated thesis \textit{offense}, an ambitious but often effective tactical maneuver.}
+  \label{fig:fig1}
+\end{figure*}
+
+...and reference it like so: \textbf{Figure \ref{fig:fig1}}.
+
+%%
+%% Making Tables
+%%
+
+\subsection{Making tables}
+
+Or maybe you'll make a table...
+
+\begin{table}[h!]
+  \begin{center}
+    \caption{Your first table.}
+    \label{tab:table1}
+    \begin{tabular}{l|c|r} % <-- Alignments: 1st column left, 2nd middle and 3rd right, with vertical lines in between
+      \textbf{Value 1} & \textbf{Value 2} & \textbf{Value 3}\\
+      $\alpha$ & $\beta$ & $\gamma$ \\
+      \hline
+      1 & 1110.1 & a\\
+      2 & 10.1 & b\\
+      3 & 23.113231 & c\\
+    \end{tabular}
+    \label{table:table1}
+  \end{center}
+\end{table}
+
+...an reference it too: \textbf{Table \ref{table:table1}}
+
+%%
+%% Using Abbreviations
+%%
+
+\subsection{Using Abbreviations}
+
+You may also use abbreviations like \acrfull{QML} or \acrfull{NISQ} device. Make sure you define the abbreviations in the \textit{glossary.tex} file. Further, you can use different commands. For the first usage in a section use \verb|\acrfull| to show the full wording followed by the acronym in parentheses, as seen above. Use \verb|\acrlong| to show just the full wording (e.g. \acrlong{QIP} – this can be good for instances where the acronym might lead to ambiguity) or \verb|\acrshort| for just the acroynm itself (e.g. \acrshort{FTQC}, which stands for the fault tolerant quantum computing paradigm!)

@@ -1,0 +1,87 @@
+%%
+%% Document Setup
+%% 
+
+% Declare Document Class
+\documentclass{article}
+
+% Import OHSU dissertation style
+\usepackage{styling/ohsu-dissertation}
+
+% For formatting reasons, we input the list of abbreviations
+% (i.e. glossary) section outside of the document
+\makeglossaries
+\input{sections/glossary}
+
+% Define Text Variables
+% This is where you write in the details
+% of your project, institution, etc.
+\newcommand{\projecttitle}{Community Detection with applications\\
+to Multireference alignment}
+\newcommand{\projectnum}{20.1.1.2135}
+\newcommand{\projectauthorone}{Tomer Matityahu 312116668}
+\newcommand{\projectauthortwo}{Alexey Kiryushkin 324439876}
+\newcommand{\projectmentorone}{Mr. Noam Janco Tel-Aviv University}
+\newcommand{\projectmentortwo}{Dr. Tamir Bendory Tel-Aviv University}
+\newcommand{\department}{School of Electrical Engineering}
+\newcommand{\institution}{Tel-Aviv University}
+\newcommand{\school}{The Iby and Aladar Fleischman Faculty of Engineering}
+\newcommand{\degree}{B.Sc Electrical Engineering}
+
+%%
+%% Document Structure
+%%
+
+\begin{document}
+
+    \include{sections/preamble}
+    \pagenumbering{arabic}
+    \clearpage
+    
+    \tableofcontents
+    \clearpage
+    
+    \include{sections/abstract}
+    \clearpage
+    
+    \listoffigures
+    \clearpage
+    
+    \listoftables
+    \clearpage
+    
+    % Generate List of Abbreviations
+    \setglossarystyle{listgroup}
+    \printglossary[type=\acronymtype,title={List of Abbreviations},toctitle=List of Abbreviations] 
+    \clearpage
+    
+    \include{sections/introduction}
+    \clearpage
+    
+    \include{sections/background}
+    \clearpage
+    
+    \include{sections/aim-1}
+    \clearpage
+    
+    \include{sections/aim-2}
+    \clearpage
+    
+    \include{sections/aim-3}
+    \clearpage
+    
+    \include{sections/discussion}
+    \clearpage
+    
+    \include{sections/conclusion}
+    \clearpage
+    
+    \bibliographystyle{alpha}
+    \bibliography{references}
+    \clearpage
+    
+    \include{sections/appendix}
+    \clearpage
+
+\end{document}
+
