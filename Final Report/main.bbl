@@ -1,8 +1,42 @@
-\begin{thebibliography}{Cor21}
+\begin{thebibliography}{1}
 
-\bibitem[Cor21]{OHSU-overleaf-dissertation-template}
+\bibitem{9016106}
+Tamir Bendory, Alberto Bartesaghi, and Amit Singer.
+\newblock Single-particle cryo-electron microscopy: Mathematical theory,
+  computational challenges, and opportunities.
+\newblock {\em IEEE Signal Processing Magazine}, 37(2):58--76, 2020.
+
+\bibitem{chowdhury2015structural}
+Saikat Chowdhury, Stephanie~A Ketcham, Trina~A Schroer, and Gabriel~C Lander.
+\newblock Structural organization of the dynein--dynactin complex bound to
+  microtubules.
+\newblock {\em Nature structural \& molecular biology}, 22(4):345--347, 2015.
+
+\bibitem{OHSU-overleaf-dissertation-template}
 B.~A. Cordier.
 \newblock Ohsu latex dissertation template, 2021.
 \newblock Available on Overleaf.
+
+\bibitem{scheres2014beam}
+Sjors~HW Scheres.
+\newblock Beam-induced motion correction for sub-megadalton cryo-em particles.
+\newblock {\em elife}, 3:e03665, 2014.
+
+\bibitem{scheres2005fast}
+Sjors~HW Scheres, Mikel Valle, and Jos{\'e}-Mar{\'\i}a Carazo.
+\newblock Fast maximum-likelihood refinement of electron microscopy images.
+\newblock {\em Bioinformatics}, 21(suppl\_2):ii243--ii244, 2005.
+
+\bibitem{sigworth1998maximum}
+Fred~J Sigworth.
+\newblock A maximum-likelihood approach to single-particle image refinement.
+\newblock {\em Journal of structural biology}, 122(3):328--339, 1998.
+
+\bibitem{song2013flexibility}
+Chun~Feng Song, Kostas Papachristos, Shaun Rawson, Markus Huss, Helmut
+  Wieczorek, Emanuele Paci, John Trinick, Michael~A Harrison, and Stephen~P
+  Muench.
+\newblock Flexibility within the rotor and stators of the vacuolar h+-atpase.
+\newblock {\em PLoS One}, 8(12):e82207, 2013.
 
 \end{thebibliography}
