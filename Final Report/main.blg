@@ -27,34 +27,34 @@ A level-1 auxiliary file: sections/appendix.aux
 Database file #1: references.bib
 You've used 7 entries,
             2118 wiz_defined-function locations,
-            561 strings with 5633 characters,
-and the built_in function-call counts, 2454 in all, are:
-= -- 234
-> -- 128
+            559 strings with 5649 characters,
+and the built_in function-call counts, 2543 in all, are:
+= -- 239
+> -- 144
 < -- 0
-+ -- 52
-- -- 44
-* -- 198
-:= -- 424
-add.period$ -- 21
++ -- 58
+- -- 50
+* -- 211
+:= -- 440
+add.period$ -- 20
 call.type$ -- 7
-change.case$ -- 43
+change.case$ -- 46
 chr.to.int$ -- 0
 cite$ -- 7
 duplicate$ -- 73
 empty$ -- 184
-format.name$ -- 44
-if$ -- 490
+format.name$ -- 50
+if$ -- 505
 int.to.chr$ -- 0
 int.to.str$ -- 7
 missing$ -- 6
-newline$ -- 38
+newline$ -- 37
 num.names$ -- 14
-pop$ -- 36
+pop$ -- 39
 preamble$ -- 1
-purify$ -- 36
+purify$ -- 39
 quote$ -- 0
-skip$ -- 49
+skip$ -- 50
 stack$ -- 0
 substring$ -- 174
 swap$ -- 7
@@ -65,4 +65,4 @@ type$ -- 28
 warning$ -- 0
 while$ -- 23
 width$ -- 8
-write$ -- 78
+write$ -- 76

@@ -4,63 +4,39 @@
 
 \raggedright
 
-This section should include a comprehensive review of prior work across the stated aims. It also provides a summary of the gaps in the current literature and is will be substantially longer than a background section in a manuscript.
+\subsection{Heterogeneous 1D \acrlong{MRA} model}
 
-%%
-%% Citations
-%%
+In our project we will use the Heterogeneous 1D \acrlong{MRA} statistical model\cite{boumal2018heterogeneous} (\acrshort{MRA} shortly) for the sake of \acrshort{cryo-EM} data abstraction. Bellow is the definition of the model.\\
+Let $x_1,...,x_K \in \mathbb{R}^L$ be $K$ unknown normalized signals (distinct even up to shift) and let $R_s$ be the cyclic shift operator: $(R_sx)[n]=x[\langle n-s \rangle_L]$. We are given $N$ observations:
 
-\subsection{Referencing Citations}
+\begin{equation}
+y_j = R_{s_j} x_{k_j} + \varepsilon_j, \quad j=1,...,N
+\end{equation}
 
-Citations are straight forward and will be automatically sorted on rendering. Include your citations in the \textit{references.bib} file. For examples, see this  \textit{\href{https://libguides.nps.edu/citation/ieee-bibtex}{handy citation guide}}. Here's an example usage where I cite this project \cite{OHSU-overleaf-dissertation-template}. Boom!
+where $s_j \sim U[0, L-1],k_j \sim U[0, K-1]$ and $\varepsilon_j \sim \mathcal{N}(0,\sigma^2I)$ is i.i.d white Gaussian noise. Our goal is to estimate the signals 
+$x_1,...,x_K$ from the observations.\\
+Simply speaking, \acrshort{MRA} observation is a randomly chosen signal $x_{k_j}$, shifted randomly by $s_j$ and distorted using white noise. \textbf{Figure \ref{fig:fig2}} shows an example of two \acrshort{MRA} observations at different noise levels.
 
-%%
-%% Including Figures
-%%
-
-\subsection{Including figures}
-
-You might include a figure here...
-
-\begin{figure*}
+\begin{figure}[h]
   \centering
-  \includegraphics[width=\textwidth]{"figures/thesis-defense".png}
-  \caption{\textbf{The best thesis defense is a good thesis offense.} A conceptual illustration of the celebrated thesis \textit{offense}, an ambitious but often effective tactical maneuver.}
-  \label{fig:fig1}
-\end{figure*}
+  \includegraphics[width=0.8\textwidth]{"figures/MRA_example".png}
+  \caption{\textbf{Example of \acrshort{MRA} observations at different SNR levels.} Each column shows a shifted distinct signal at different noise level. We can see that for low \acrshort{SNR} the task of signal estimation is quite challenging.}
+  \label{fig:fig2}
+\end{figure}
 
-...and reference it like so: \textbf{Figure \ref{fig:fig1}}.
+In order to build a graph from \acrshort{MRA} observations, a similarity measure between observations must be defined. We will use the cross-correlation, as its invariance to shift holds great value.
 
-%%
-%% Making Tables
-%%
+\begin{equation}
+(x \star y)_n \triangleq \sum_{l=\infty}^{\infty}x^*_l(y)_{n+l}
+\end{equation}
 
-\subsection{Making tables}
+The convolution theorem states that the convolution of two signals  equals to the inverse Fourier transform of the product of the Fourier transforms of each signal. Thus we can write the equation above in terms of Fourier transforms and later exploit \acrshort{FFT} in our simulations.
 
-Or maybe you'll make a table...
+\begin{equation}
+(x \star y)_n = \mathcal{F}^{-1}\lbrace X^* \cdot Y {\rbrace}_n
+\end{equation}
 
-\begin{table}[h!]
-  \begin{center}
-    \caption{Your first table.}
-    \label{tab:table1}
-    \begin{tabular}{l|c|r} % <-- Alignments: 1st column left, 2nd middle and 3rd right, with vertical lines in between
-      \textbf{Value 1} & \textbf{Value 2} & \textbf{Value 3}\\
-      $\alpha$ & $\beta$ & $\gamma$ \\
-      \hline
-      1 & 1110.1 & a\\
-      2 & 10.1 & b\\
-      3 & 23.113231 & c\\
-    \end{tabular}
-    \label{table:table1}
-  \end{center}
-\end{table}
+In order to obtain normalized cross-correlation \acrshort{MRA} samples must first be normalized.
 
-...an reference it too: \textbf{Table \ref{table:table1}}
+\subsection{Introduction to graphs}
 
-%%
-%% Using Abbreviations
-%%
-
-\subsection{Using Abbreviations}
-
-You may also use abbreviations like

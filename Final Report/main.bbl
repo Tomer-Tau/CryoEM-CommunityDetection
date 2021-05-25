@@ -6,16 +6,15 @@ Tamir Bendory, Alberto Bartesaghi, and Amit Singer.
   computational challenges, and opportunities.
 \newblock {\em IEEE Signal Processing Magazine}, 37(2):58--76, 2020.
 
+\bibitem{boumal2018heterogeneous}
+Nicolas Boumal, Tamir Bendory, Roy~R. Lederman, and Amit Singer.
+\newblock Heterogeneous multireference alignment: a single pass approach, 2018.
+
 \bibitem{chowdhury2015structural}
 Saikat Chowdhury, Stephanie~A Ketcham, Trina~A Schroer, and Gabriel~C Lander.
 \newblock Structural organization of the dynein--dynactin complex bound to
   microtubules.
 \newblock {\em Nature structural \& molecular biology}, 22(4):345--347, 2015.
-
-\bibitem{OHSU-overleaf-dissertation-template}
-B.~A. Cordier.
-\newblock Ohsu latex dissertation template, 2021.
-\newblock Available on Overleaf.
 
 \bibitem{scheres2014beam}
 Sjors~HW Scheres.
