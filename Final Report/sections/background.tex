@@ -10,33 +10,107 @@ In our project we will use the Heterogeneous 1D \acrlong{MRA} statistical model\
 Let $x_1,...,x_K \in \mathbb{R}^L$ be $K$ unknown normalized signals (distinct even up to shift) and let $R_s$ be the cyclic shift operator: $(R_sx)[n]=x[\langle n-s \rangle_L]$. We are given $N$ observations:
 
 \begin{equation}
+\label{eqn:MRA_obs}
 y_j = R_{s_j} x_{k_j} + \varepsilon_j, \quad j=1,...,N
 \end{equation}
 
 where $s_j \sim U[0, L-1],k_j \sim U[0, K-1]$ and $\varepsilon_j \sim \mathcal{N}(0,\sigma^2I)$ is i.i.d white Gaussian noise. Our goal is to estimate the signals 
 $x_1,...,x_K$ from the observations.\\
-Simply speaking, \acrshort{MRA} observation is a randomly chosen signal $x_{k_j}$, shifted randomly by $s_j$ and distorted using white noise. \textbf{Figure \ref{fig:fig2}} shows an example of two \acrshort{MRA} observations at different noise levels.
+Simply speaking, \acrshort{MRA} observation is a randomly chosen signal $x_{k_j}$, shifted randomly by $s_j$ and distorted using white noise. \textbf{Fig.  \ref{fig:MRA_exmp}} shows an example of two \acrshort{MRA} observations at different noise levels.
 
 \begin{figure}[h]
   \centering
   \includegraphics[width=0.8\textwidth]{"figures/MRA_example".png}
   \caption{\textbf{Example of \acrshort{MRA} observations at different SNR levels.} Each column shows a shifted distinct signal at different noise level. We can see that for low \acrshort{SNR} the task of signal estimation is quite challenging.}
-  \label{fig:fig2}
+  \label{fig:MRA_exmp}
 \end{figure}
 
 In order to build a graph from \acrshort{MRA} observations, a similarity measure between observations must be defined. We will use the cross-correlation, as its invariance to shift holds great value.
 
 \begin{equation}
+\label{eqn:sim_def}
 (x \star y)_n \triangleq \sum_{l=\infty}^{\infty}x^*_l(y)_{n+l}
 \end{equation}
 
 The convolution theorem states that the convolution of two signals  equals to the inverse Fourier transform of the product of the Fourier transforms of each signal. Thus we can write the equation above in terms of Fourier transforms and later exploit \acrshort{FFT} in our simulations.
 
 \begin{equation}
+\label{eqn:sim_FFT}
 (x \star y)_n = \mathcal{F}^{-1}\lbrace X^* \cdot Y {\rbrace}_n
 \end{equation}
 
 In order to obtain normalized cross-correlation \acrshort{MRA} samples must first be normalized.
 
-\subsection{Introduction to graphs}
+\clearpage
+
+\subsection{Community detection}
+
+As part of our suggested solution to the heterogeneity problem, we convert the \acrshort{MRA} data into a weighted graph. Each node in the graph represents a different \acrshort{MRA} observation, as was defined in \textbf{Eq.\ref{eqn:MRA_obs}}. Each edge connecting a pair of nodes has a weight that represents a similarity measure between the nodes, as was defined in \textbf{Eq. \ref{eqn:sim_FFT}}.\\
+
+Our objective is the partition of all \acrshort{MRA} observations into $K$ classes, where each class represents a distinct signal before it was distorted by \textbf{Eq. \ref{eqn:MRA_obs}}. Our classification process is carried out using \acrfull{CD} algorithms applied on the produced weighted graph.\\
+
+Community, in a broad sense, is a set of nodes, which are similar to each other and dissimilar from the rest of the network. \acrfull{CD} algorithms aim to find these communities in a graph. \textbf{Fig. \ref{fig:CD}} shows \acrshort{CD} at work.
+
+Finding communities in a graph carries a great value to revealing hidden patterns in data and has many use-cases, such as social behaviour prediction \cite{zachary1976} or medical diagnosis\cite{guimera2005}. Evidently, \acrlong{CD} algorithms are well studied and widely used. In our project we will study a group of state-of-the-art \acrshort{CD} algorithms and apply them on \acrshort{MRA} data.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.8\textwidth]{"figures/CD".png}
+  \caption{\textbf{Graph partition by \acrlong{CD}.} In this example for the sake of simplicity an unweighed graph is used, as opposed to the weighted graphs we study in our project.}
+  \label{fig:CD}
+\end{figure}
+
+Below is a summary of the algorithms we studied.
+\begin{itemize}
+
+\item \textit{Edge Betweenness}\cite{girvannewman2002} uses the "edge betweenness" as its optimization parameter, which is defined as the number of shortest paths that go through an edge in a graph. Following this definition, edges with higher "betweenness" can be interpreted as bridges between different communities. The algorithm computes the "edge betweenness" score for each edge in the graph and iteratively removes the edges with the highest score, while computing the score for each iteration. The end product is a disconnected graph separated into separate communities.
+
+\item \textit{Fast Greedy}\cite{Newman_2004} is based on the idea of \textit{modularity}. Let $e_{ij}$ be the fraction of edges in a graph that connect nodes in group $i$ to those in group $j$, and let 
+$a_i = \sum_j e_{ij}$. Then modularity is defined as:
+
+\begin{equation}
+\label{eqn:modularity}
+Q = \sum_i (e_{ii}-a_i^2)
+\end{equation}
+
+Simply speaking, modularity is the fraction of edges that fall within communities minus the expected value of the same quantity if edges fall at random. Thus, low modularity values indicate a random structure of the graph, while higher values point to deviation from randomness and more defined communities within a graph.\\
+The algorithm operates by initializing a community for each node in a graph. Then it repeatedly joins nodes in pairs such that the modularity of the graph is maximized.
+
+\item \textit{Label Propagation}\cite{Raghavan_2007} exploits the basic notion of a community as a set of similar neighbouring nodes. Each node starts with a unique label, and after each iteration, a node updates its label to the most common label of its neighbours. The algorithm stops when each node has a label that the maximum number of its neighbours have.
+
+\item \textit{Leading Eigenvector}\cite{Newman_2006} is based on the \textit{spectral clustering}. The basic idea behind spectral clustering is to convert the graph into a \textit{similarity matrix} and find the eigenvectors that correspond to the (second) smallest eigenvalue of the matrix. These eigenvectors define the \textit{minimum cut size} of the graph (cut size is defined as the number of edges running between two groups of nodes). The second smallest eigenvalue is chosen because the smallest correspond to minimum cut size of 0, where the whole graph is a single community.\\
+Let $\vec{A}$ be the  \textit{adjacency matrix}:
+
+\begin{equation}
+\label{eqn:adj_matrix}
+A_{ij}=
+\begin{cases}
+	1 & \text{if nodes $(i,j)$ are connected}\\
+	0 & otherwise
+\end{cases}
+\end{equation}
+
+and $\vec{P}$, such that $P_{ij}$ is the expected number of edges between nodes $i,j$ given a random graph under the constraint that the expected \textit{degree} (number of edges connected to a node) of each node equal to the degree of each corresponding node in the input graph. \textit{Modularity matrix} is then defined as:
+
+\begin{equation}
+\label{eqn:modularity_matrix}
+\vec{B}=\vec{A}-\vec{P}
+\end{equation}
+
+Leading eigenvector algorithm uses the modularity matrix as the similarity matrix and proceeds to perform a spectral clustering of the input graph.
+
+\item \textit{Walktrap}\cite{Pons_2006} is based on the idea that short random walks on a graph tend to stay in the same densely connected area. Each node starts in its own community and a random walk process is run on each node. Based on the random walk, distances between nodes are calculated, and nodes with the smallest distances are lumped together. The process then repeats until all nodes are in the same community. At each step modularity (\textbf{Eq. \eqref{eqn:modularity}}) of the partition is computed, and in the end the partition with the maximum modularity is chosen.
+
+\item \textit{Infomap}\cite{Rosvall_2009} uses \textit{Huffman code} as a way to compress the information about a path of a random walk in a graph.
+Each node in a graph is given a unique Id. A random walk that explores the entire graph is initialized, note that random walk tends to stay longer in a densely connected areas. This allows to combine nodes Ids into Huffman codes, that will ultimately label the communities in a graph. Infomap then optimizes the number of Huffman codes such that the encoded information about the path of the random walk in a graph is maximally compressed.
+
+\item \textit{Louvain}\cite{Blondel_2008} maximizes modularity (\textbf{Eq. \eqref{eqn:modularity}}) in a hierarchical fashion. In the first phase of the algorithm, each node starts in its own community. Each node is then placed in a community with its neighbour such that a maximum modularity score is obtained for the graph. In the second phase a new graph is built whose nodes are now the communities found during the first phase, such that the weight of the edges between these nodes equal to the edge density between the communities from the first phase. After second phase is complete, the new graph is passed through the first phase again. The process is repeated until no modularity gain is obtained.
+
+\item \textit{Leiden}\cite{Traag_2019} is an improvement of the Louvain algorithm. Louvain algorithm, in some cases, has proven to produce bad partitions in the form of disconnected communities (a community that contains disconnected nodes). Leiden algorithm introduces a refinement stage in the first phase (see Louvain algorithm). At the second phase, the refined partition is aggregated and initially partitioned based on the unrefined partition. By creating the aggregated graph based on the refined partition, Leiden algorithm has more room for identifying high-quality partitions.\\
+Simply speaking, when a community is aggregated to a node at the second phase in Louvain algorithm, no further changes inside the community are possible. Leiden, on the other hand, gives more flexibility by refining the graph in the first phase.\\
+Leiden also uses a faster method for implementing the nodes transitions between communities in the first phase.
+
+
+
+\end{itemize}
 
